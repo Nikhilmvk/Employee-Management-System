@@ -1,14 +1,17 @@
+# Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Build (SDK inside container)
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /app
-
-COPY *.csproj ./
-RUN dotnet restore
-
+WORKDIR /src
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+# Final
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/out .
-EXPOSE 8080
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "DotNetSqlJenkins.dll"]
