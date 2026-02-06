@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using SimpleEmployeeApp.Models;
+using DotNetSqlJenkins.Models;
 
-namespace SimpleEmployeeApp.Data
+namespace DotNetSqlJenkins.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
-        public DbSet<Employee> Employees { get; set; } = null!;
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }
