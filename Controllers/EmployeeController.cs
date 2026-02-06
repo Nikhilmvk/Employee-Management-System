@@ -1,26 +1,32 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleEmployeeApp.Data;
-using SimpleEmployeeApp.Models;
+using DotNetSqlJenkins.Data;
+using DotNetSqlJenkins.Models;
 
-namespace SimpleEmployeeApp.Controllers
+namespace DotNetSqlJenkins.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public EmployeeController(AppDbContext context) => _context = context;
+
+        public EmployeeController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<IActionResult> Get() => Ok(await _context.Employees.ToListAsync());
+        public IActionResult GetEmployees()
+        {
+            return Ok(_context.Employees.ToList());
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Employee emp)
+        public IActionResult AddEmployee(Employee employee)
         {
-            _context.Employees.Add(emp);
-            await _context.SaveChangesAsync();
-            return Ok(emp);
+            _context.Employees.Add(employee);
+            _context.SaveChanges();
+            return Ok(employee);
         }
     }
 }
