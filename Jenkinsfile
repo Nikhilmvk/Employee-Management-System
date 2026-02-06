@@ -2,25 +2,23 @@ pipeline {
     agent any
 
     stages {
-        stage('Main branch only') {
-            when {
-                branch 'main'
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t employee-api:${BUILD_NUMBER} .'
             }
-            stages {
-                stage('Build Docker Image') {
-                    steps {
-                        sh 'docker build -t employee-api .'
-                    }
-                }
+        }
 
-                stage('Run Container') {
-                    steps {
-                        sh '''
-                          docker rm -f employee-api || true
-                          docker run -d -p 8040:8080 --name employee-api employee-api
-                        '''
-                    }
-                }
+        stage('Run Container') {
+            steps {
+                sh '''
+                docker stop employee-api || true
+                docker rm employee-api || true
+
+                docker run -d \
+                --name employee-api \
+                -p 8042:80 \
+                employee-api:${BUILD_NUMBER}
+                '''
             }
         }
     }
