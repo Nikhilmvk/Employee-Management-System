@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOTNET_ROOT = "C:\\Program Files\\dotnet"
-    }
-
     stages {
 
         stage('Checkout') {
@@ -15,25 +11,28 @@ pipeline {
 
         stage('Restore') {
             steps {
-                bat 'dotnet restore'
+                sh 'dotnet restore'
             }
         }
 
         stage('Build') {
             steps {
-                bat 'dotnet build --configuration Release'
+                sh 'dotnet build --configuration Release'
             }
         }
 
         stage('Publish') {
             steps {
-                bat 'dotnet publish -c Release -o publish'
+                sh 'dotnet publish -c Release -o publish'
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'xcopy publish C:\\Deploy\\DotNetSqlJenkins /E /Y /I'
+                sh '''
+                  sudo mkdir -p /var/www/employee-api
+                  sudo cp -r publish/* /var/www/employee-api/
+                '''
             }
         }
     }
