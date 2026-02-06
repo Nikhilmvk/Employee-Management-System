@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/yourusername/DotNetSqlJenkins.git'
+                git 'https://github.com/Nikhilmvk/Employee-Management-System.git'
             }
         }
 
