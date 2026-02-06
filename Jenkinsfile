@@ -2,29 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Build Docker Image') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/Nikhilmvk/Employee-Management-System.git'
+                sh 'docker build -t employee-api .'
             }
         }
 
-        stage('Restore') {
+        stage('Run Container') {
             steps {
-                sh 'dotnet restore'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'dotnet build -c Release'
-            }
-        }
-
-        stage('Publish') {
-            steps {
-                sh 'dotnet publish -c Release -o publish'
-                archiveArtifacts artifacts: 'publish/**'
+                sh '''
+                  docker rm -f employee-api || true
+                  docker run -d -p 8080:8080 --name employee-api employee-api
+                '''
             }
         }
     }
